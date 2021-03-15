@@ -28,7 +28,6 @@ const AdminSchema = new Schema({
     },
     phone: {
         type: String,
-        select: false,
         required: true,
         trim: true,
         minlength: 3

@@ -44,9 +44,6 @@ mongoose.connect(dbConfig.url, {
 
 
 require("./app/routes/route.admin")(app)
-require("./app/routes/route.user")(app)
-require("./app/routes/route.category")(app)
-require("./app/routes/route.question")(app)
 
 
 

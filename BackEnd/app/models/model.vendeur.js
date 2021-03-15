@@ -55,11 +55,18 @@ const VendeurSchema = new Schema({
         minlength: 3
     },
     chiffreAffaires: {
-        type: String,
+        type: Number,
         select: false,
         required: true,
         trim: true,
         minlength: 3
+    },
+    produits: {
+        type: Number,
+        select: false,
+        required: true,
+        trim: true,
+        default: 0,
     },
 },
     {

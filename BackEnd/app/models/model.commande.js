@@ -1,56 +1,50 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const ClientSchema = new Schema({
-    nom: {
+const CommandeSchema = new Schema({
+    status: {
         type: String,
         required: true,
         trim: true,
-        minlength: 3
+        minlength: 3,
+        default: "attente"
     },
-    prix: {
+    idProduit: {
         type: String,
         required: true,
         trim: true,
-        minlength: 3
+        minlength: 3,
     },
-    quantite: {
+    idClient: {
         type: String,
         required: true,
         trim: true,
-        minlength: 3
+        minlength: 3,
     },
-    photo : {
+    idVendeur: {
         type: String,
-        select: false,
         required: true,
         trim: true,
-        minlength: 3
+        minlength: 3,
     },
-    date : {
+    DateLivraison: {
         type: Date,
-        select: false,
         required: true,
         trim: true,
-        default: Date.now,
+        minlength: 3,
+        default: null,
     },
-    idCategorie : {
+    idLivreur: {
         type: String,
-        select: false,
         required: true,
         trim: true,
-        minlength: 3
+        minlength: 3,
+        default: null,
     },
-    idVendeur : {
-        type: String,
-        select: false,
-        required: true,
-        trim: true,
-        minlength: 3
-    },
+
 },
     {
         versionKey: false
     }
 );
 
-module.exports = mongoose.model('Client', ClientSchema);
+module.exports = mongoose.model('Commande', CommandeSchema);

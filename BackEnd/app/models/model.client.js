@@ -40,6 +40,15 @@ const ClientSchema = new Schema({
         trim: true,
         minlength: 3
     },
+    status: {
+        type: String, 
+        enum: ['Pending', 'Active'],
+        default: 'Pending'
+      },
+    confirmationCode: { 
+        type: String, 
+        unique: true 
+    },
 },
     {
         versionKey: false

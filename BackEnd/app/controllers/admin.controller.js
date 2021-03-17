@@ -54,22 +54,16 @@ exports.registerAdmin = (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
-
-    bcrypt.hash(req.body.password, 10, function(err, hashedPass){
-        if(err){
-            res.json({
-                error: err
-            })
-        }
-
+    
     let adminPush = new Admin({
         nom: req.body.nom,
         prenom: req.body.prenom,
         email: req.body.email,
-        password: hashedPass,
+        password: bcrypt.hashSync(req.body.password, 10),
         phone: req.body.phone
        
     })
+    
     Admin.findOne({ email: req.body.email })
         .then((admin) => {
             if (admin == null) {
@@ -82,14 +76,9 @@ exports.registerAdmin = (req, res) => {
             }
         })
         .catch((err) => res.json(err))
-    })
+    
 }
 
-
-exports.getAdmin = async (req, res) => {
-    await Admin.find().then((admins) => res.json(admins))
-        .catch((err) => res.json(err))
-}
 
 
 exports.getAdmin = async (req, res) => {

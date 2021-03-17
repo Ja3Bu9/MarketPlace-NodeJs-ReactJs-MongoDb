@@ -45,6 +45,7 @@ mongoose.connect(dbConfig.url, {
 
 require("./app/routes/route.admin")(app)
 require("./app/routes/route.superadmin")(app)
+require("./app/routes/route.client")(app)
 
 
 

@@ -95,20 +95,20 @@ exports.deleteAdmin = async (req, res) => {
     }).catch((err) => res.status(500).json(err));
 }
 
-exports.updateAdmin = (req, res) => {
-    bcrypt.hash(req.body.password, 10,async function(err, hashedPass){
+exports.updateAdmin = async (req, res) => {
+    
 
     await Admin.updateOne({
         _id:req.params.idAdmin}, {$set :{
             nom: req.body.nom,
             prenom: req.body.prenom,
             email: req.body.email,
-            password: hashedPass,
+            password: bcrypt.hashSync(req.body.password, 10),
             phone: req.body.phone
            
         }
     }).then(() => {
         res.status(200).json("Admin updated");
     }).catch((err) => res.status(500).json(err))
-})
+
 }

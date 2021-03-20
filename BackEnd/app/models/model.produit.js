@@ -21,28 +21,24 @@ const ClientSchema = new Schema({
     },
     photo : {
         type: String,
-        select: false,
         required: true,
         trim: true,
         minlength: 3
     },
     date : {
         type: Date,
-        select: false,
         required: true,
         trim: true,
         default: Date.now,
     },
     idCategorie : {
         type: String,
-        select: false,
         required: true,
         trim: true,
         minlength: 3
     },
     idVendeur : {
         type: String,
-        select: false,
         required: true,
         trim: true,
         minlength: 3

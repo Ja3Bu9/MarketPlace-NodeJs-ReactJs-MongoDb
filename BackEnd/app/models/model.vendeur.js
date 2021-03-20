@@ -17,7 +17,9 @@ const VendeurSchema = new Schema({
         type: String,
         required: true,
         trim: true,
-        minlength: 3
+        minlength: 3,
+        unique: true
+
     },
     password: {
         type: String,
@@ -28,42 +30,34 @@ const VendeurSchema = new Schema({
     },
     phone: {
         type: String,
-        select: false,
         required: true,
         trim: true,
         minlength: 3
     },
     type: {
         type: String,
-        select: false,
-        required: true,
-        trim: true,
-        minlength: 3
+        enum: ['Starter', 'Pro','Expert'],
+        default: 'Starter'
     },
     status: {
-        type: Boolean,
-        select: false,
-        required: true,
-        trim: true,
-        default: false,
-    },
+        type: String, 
+        enum: ['Pending', 'Active','Suspended'],
+        default: 'Pending'
+      },
     fichierAdministratif : {
         type: String,
-        select: false,
         required: true,
         trim: true,
         minlength: 3
     },
     chiffreAffaires: {
         type: Number,
-        select: false,
         required: true,
         trim: true,
-        minlength: 3
+        default: 0
     },
     produits: {
         type: Number,
-        select: false,
         required: true,
         trim: true,
         default: 0,

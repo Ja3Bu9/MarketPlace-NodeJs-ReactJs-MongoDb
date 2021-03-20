@@ -58,8 +58,8 @@ module.exports = app => {
     Router.route("/confirm/:confirmationCode").get(conntrollerClient.verifyClient);
     Router.route("/").get(conntrollerClient.getClient);
 
-    // Router.route("/delete/:idAdmin").delete(conntrollerAdmin.deleteAdmin);
-    // Router.route("/update/:idAdmin").put(conntrollerAdmin.updateAdmin);
+    Router.route("/delete/:idClient").delete(conntrollerClient.deleteClient);
+    Router.route("/update/:idClient").put(conntrollerClient.updateClient);
     
 
     app.use("/client", Router);

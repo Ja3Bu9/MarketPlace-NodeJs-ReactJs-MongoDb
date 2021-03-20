@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken')
 const config = require("../configs/jwt.config")
 const nodemailer = require("../configs/nodemailer.config")
 const { body, validationResult } = require('express-validator');
+var xss = require('xss');
 
 
 
@@ -21,14 +22,52 @@ exports.registerClient = (req, res) => {
     confirmationCode += characters[Math.floor(Math.random() * characters.length )];
     }
 
+    // XSS 
+    var nom = xss(req.body.nom, {
+        whiteList:          [],        // empty, means filter out all tags
+        stripIgnoreTag:     true,      // filter out all HTML not in the whilelist
+        stripIgnoreTagBody: ['script'] // the script tag is a special case, we need
+                                      // to filter out its content
+      });
+      var prenom = xss(req.body.prenom, {
+        whiteList:          [],        // empty, means filter out all tags
+        stripIgnoreTag:     true,      // filter out all HTML not in the whilelist
+        stripIgnoreTagBody: ['script'] // the script tag is a special case, we need
+                                      // to filter out its content
+      });
+      var email = xss(req.body.email, {
+        whiteList:          [],        // empty, means filter out all tags
+        stripIgnoreTag:     true,      // filter out all HTML not in the whilelist
+        stripIgnoreTagBody: ['script'] // the script tag is a special case, we need
+                                      // to filter out its content
+      });
+      var password = xss(req.body.password, {
+        whiteList:          [],        // empty, means filter out all tags
+        stripIgnoreTag:     true,      // filter out all HTML not in the whilelist
+        stripIgnoreTagBody: ['script'] // the script tag is a special case, we need
+                                      // to filter out its content
+      });
+      var phone = xss(req.body.phone, {
+        whiteList:          [],        // empty, means filter out all tags
+        stripIgnoreTag:     true,      // filter out all HTML not in the whilelist
+        stripIgnoreTagBody: ['script'] // the script tag is a special case, we need
+                                      // to filter out its content
+      });
+      var adresse = xss(req.body.adresse, {
+        whiteList:          [],        // empty, means filter out all tags
+        stripIgnoreTag:     true,      // filter out all HTML not in the whilelist
+        stripIgnoreTagBody: ['script'] // the script tag is a special case, we need
+                                      // to filter out its content
+      });
+      // XSS
 
     let clientPush = new Client({
-        nom: req.body.nom,
-        prenom: req.body.prenom,
-        email: req.body.email,
-        password: bcrypt.hashSync(req.body.password, 10),
-        phone: req.body.phone,
-        adresse: req.body.adresse,
+        nom: nom,
+        prenom: prenom,
+        email: email,
+        password: bcrypt.hashSync(password, 10),
+        phone: phone,
+        adresse: adresse,
         confirmationCode: confirmationCode
        
     })
@@ -62,7 +101,7 @@ exports.loginClient = (req, res) => {
 
         Client.findOne({
             email: req.body.email
-        }).select('password').then((client) => {
+        }).select('password').select('status').then((client) => {
             if (client == null) {
                 error.push("email not found !")
                 res.json({ error: error });
@@ -91,6 +130,7 @@ exports.loginClient = (req, res) => {
                     auth: true,
                     token: token
                 })
+
             }
         
         }).catch((err) => {
@@ -124,4 +164,65 @@ exports.getClient = async (req, res) => {
     }).catch((err) => {
         res.status(500).json(err)
     })
+}
+
+exports.deleteClient = async (req, res) => {
+    await Client.remove({_id:req.params.idClient}).then(()=>{
+        res.status(200).json("Client Deleted");
+    }).catch((err) => res.status(500).json(err));
+}
+
+exports.updateClient = async (req, res) => {
+   
+    // XSS 
+    var nom = xss(req.body.nom, {
+        whiteList:          [],        // empty, means filter out all tags
+        stripIgnoreTag:     true,      // filter out all HTML not in the whilelist
+        stripIgnoreTagBody: ['script'] // the script tag is a special case, we need
+                                      // to filter out its content
+      });
+      var prenom = xss(req.body.prenom, {
+        whiteList:          [],        // empty, means filter out all tags
+        stripIgnoreTag:     true,      // filter out all HTML not in the whilelist
+        stripIgnoreTagBody: ['script'] // the script tag is a special case, we need
+                                      // to filter out its content
+      });
+      var email = xss(req.body.email, {
+        whiteList:          [],        // empty, means filter out all tags
+        stripIgnoreTag:     true,      // filter out all HTML not in the whilelist
+        stripIgnoreTagBody: ['script'] // the script tag is a special case, we need
+                                      // to filter out its content
+      });
+      var password = xss(req.body.password, {
+        whiteList:          [],        // empty, means filter out all tags
+        stripIgnoreTag:     true,      // filter out all HTML not in the whilelist
+        stripIgnoreTagBody: ['script'] // the script tag is a special case, we need
+                                      // to filter out its content
+      });
+      var phone = xss(req.body.phone, {
+        whiteList:          [],        // empty, means filter out all tags
+        stripIgnoreTag:     true,      // filter out all HTML not in the whilelist
+        stripIgnoreTagBody: ['script'] // the script tag is a special case, we need
+                                      // to filter out its content
+      });
+      var adresse = xss(req.body.adresse, {
+        whiteList:          [],        // empty, means filter out all tags
+        stripIgnoreTag:     true,      // filter out all HTML not in the whilelist
+        stripIgnoreTagBody: ['script'] // the script tag is a special case, we need
+                                      // to filter out its content
+      });
+      // XSS
+    await Client.updateOne({
+        _id:req.params.idClient}, {$set :{
+            nom: nom,
+            prenom: prenom,
+            email: email,
+            password: bcrypt.hashSync(password, 10),
+            phone: phone,
+            adresse: adresse,
+           
+        }
+    }).then(() => {
+        res.status(200).json("Client updated");
+    }).catch((err) => res.status(500).json(err))
 }

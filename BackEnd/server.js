@@ -48,6 +48,7 @@ require("./app/routes/route.superadmin")(app)
 require("./app/routes/route.client")(app)
 require("./app/routes/route.categorie")(app)
 require("./app/routes/route.vendeur")(app)
+require("./app/routes/route.produit")(app)
 
 
 

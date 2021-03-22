@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const ClientSchema = new Schema({
+const ProduitSchema = new Schema({
     nom: {
         type: String,
         required: true,
@@ -16,8 +16,7 @@ const ClientSchema = new Schema({
     quantite: {
         type: String,
         required: true,
-        trim: true,
-        minlength: 3
+        trim: true
     },
     photo : {
         type: String,
@@ -49,4 +48,4 @@ const ClientSchema = new Schema({
     }
 );
 
-module.exports = mongoose.model('Client', ClientSchema);
+module.exports = mongoose.model('Produit', ProduitSchema);

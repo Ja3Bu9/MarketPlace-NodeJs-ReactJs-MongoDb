@@ -49,6 +49,8 @@ require("./app/routes/route.client")(app)
 require("./app/routes/route.categorie")(app)
 require("./app/routes/route.vendeur")(app)
 require("./app/routes/route.produit")(app)
+require("./app/routes/route.panier")(app)
+require("./app/routes/route.commande")(app)
 
 
 

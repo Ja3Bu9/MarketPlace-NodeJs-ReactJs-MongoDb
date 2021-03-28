@@ -28,22 +28,24 @@ exports.addProduit = async (req, res) => {
         },
       }).single("file");
     
+      
       let uploadFileMiddleware = util.promisify(uploadFile);
 
     try {
        
 
-        await uploadFileMiddleware(req, res);
-       
-       
+          await uploadFileMiddleware(req, res);
+                
+                
             if (req.file == undefined) {
-                return res.status(400).send({ message: "Please upload a file!" });
+                    return res.status(400).send({ message: "Please upload a file!" });
                  }
         
 
             Vendeur.findOne({ _id: req.body.idVendeur })
             .then(async (vendeur) => {
                 if((vendeur.type == "Starter" && vendeur.produits < 10) || (vendeur.type == "Pro" && vendeur.produits < 50) || (vendeur.type == "Expert")){
+                    
                     
 
                     let produitPush = new Produit({

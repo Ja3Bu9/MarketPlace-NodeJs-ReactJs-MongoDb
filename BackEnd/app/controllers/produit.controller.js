@@ -106,6 +106,13 @@ exports.getProduits = async (req, res) => {
         res.status(500).json(err)
     })
 }
+exports.getProduitsVendeur = async (req, res) => {
+    await Produit.find({idVendeur:req.params.idVendeur}).then((produits) => {
+        res.status(200).json(produits)
+    }).catch((err) => {
+        res.status(500).json(err)
+    })
+}
 
 exports.deleteProduit = async (req, res) => {
     await Produit.remove({_id:req.params.idProduit}).then(()=>{

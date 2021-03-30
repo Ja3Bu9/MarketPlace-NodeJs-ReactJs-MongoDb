@@ -2,6 +2,7 @@ module.exports = app => {
     const { body, validationResult } = require('express-validator');
     const Router = require("express").Router();
     const conntrollerVendeur = require("../controllers/vendeur.controller");
+    const middleWare = require("../middleware/authenticateSuperAdmin")
     
 
 
@@ -24,11 +25,11 @@ module.exports = app => {
 
     Router.route("/register").post(conntrollerVendeur.registerVendeur);
 
-    Router.route("/confirm/:id").get(conntrollerVendeur.verifyVendeur);
-    Router.route("/suspend/:id").get(conntrollerVendeur.suspendVendeur);
-    Router.route("/").get(conntrollerVendeur.getVendeur);
+    Router.route("/confirm/:id").get(middleWare.superAdmin,conntrollerVendeur.verifyVendeur);
+    Router.route("/suspend/:id").get(middleWare.superAdmin,conntrollerVendeur.suspendVendeur);
+    Router.route("/").get(middleWare.superAdmin,conntrollerVendeur.getVendeur);
 
-    Router.route("/delete/:idVendeur").delete(conntrollerVendeur.deleteVendeur);
+    Router.route("/delete/:idVendeur").delete(middleWare.superAdmin,conntrollerVendeur.deleteVendeur);
     Router.route("/update/:idVendeur").put(conntrollerVendeur.updateVendeur);
 
 

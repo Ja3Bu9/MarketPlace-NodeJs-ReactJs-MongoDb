@@ -156,7 +156,7 @@ exports.verifyClient = (req, res, next) => {
             .catch((err) => res.json(err))
       })
       .catch((e) => console.log("error", e));
-  };
+}
 
 exports.getClient = async (req, res) => {
     await Client.find().then((clients) => {

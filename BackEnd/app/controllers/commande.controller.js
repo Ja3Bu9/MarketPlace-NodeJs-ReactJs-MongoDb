@@ -134,101 +134,129 @@ j++
     
 }
 
+
 exports.addCommandeCash = async (req, res) => {
 
     await Panier.find({idClient:req.params.idClient})
-     .populate('idProduit')
-     .then(async (panier) => {
-         let Produits = [];
-         let Quantite = [];
-         let PrixTotal = []
-         let DateLivraison = [];
- 
- 
-         for(i=0; i < panier.length ; i++){
-             Produits.push(panier[i].idProduit)
-             Quantite.push(panier[i].Quantite)
-             PrixTotal.push(panier[i].idProduit.prix*panier[i].Quantite)
-         }
-         
- 
-         for(const produit of Produits){
-             
-             let vendeur = await Vendeur.find({_id:produit.idVendeur}).select('type')
- 
-                      
-             var date = new Date();
+    .populate('idProduit')
+    .then(async (panier) => {
+        let Produits = [];
+        let Quantite = [];
+        let PrixTotal = []
+        let DateLivraison = [];
+        let j = 0;
+        let chiffreAffaires;
+
+        for(i=0; i < panier.length ; i++){
+            Produits.push(panier[i].idProduit)
+            Quantite.push(panier[i].Quantite)
+            PrixTotal.push(panier[i].idProduit.prix*panier[i].Quantite)
+        }
+       
+
+        for(const produit of Produits){
             
+            let vendeur = await Vendeur.find({_id:produit.idVendeur}).select('type').select('chiffreAffaires')
             
-            if (vendeur[0].type == "Starter") {
-                for(i=0; i<5 ; i++){
-                    if(date.getDay() == 6 || date.getDay() == 0){
-                        date.setDate(date.getDate() + 2);
- 
-                     }else {
-                        date.setDate(date.getDate() + 1);
- 
-                     } 
-                 }
-                 DateLivraison.push(date)
- 
+            chiffreAffaires = vendeur[0].chiffreAffaires + PrixTotal[j] 
+            
+            if(chiffreAffaires < 5000){
+                await Vendeur.updateOne({
+                    _id:produit.idVendeur}, {$set :{
+                        chiffreAffaires: chiffreAffaires            
+                    }
+                })
             }
-            if (vendeur[0].type == "Pro") {
- 
+            
+            if(chiffreAffaires > 5000 && chiffreAffaires < 20000){
+                await Vendeur.updateOne({
+                    _id:produit.idVendeur}, {$set :{
+                        chiffreAffaires: chiffreAffaires,
+                        type: 'Pro'            
+                    }
+                })
+            }
+            if(chiffreAffaires > 20000){
+                await Vendeur.updateOne({
+                    _id:produit.idVendeur}, {$set :{
+                        chiffreAffaires: chiffreAffaires,
+                        type: 'Expert'            
+                    }
+                })
+            }
+
+            var date = new Date();
+           
+           
+           if (vendeur[0].type == "Starter") {
                for(i=0; i<5 ; i++){
-                if(date.getDay() == 6 || date.getDay() == 0){
-                    date.setDate(date.getDate() + 2);
- 
-                 }else {
-                    date.setDate(date.getDate() + 1);
-                 } 
- 
-               }
-               
-               DateLivraison.push(date)
-  
-            }
-            if (vendeur[0].type == "Expert") {
-                if(date.getDay() == 6 ){
-                    date.setDate(date.getDate() + 3);                   
+                   if(date.getDay() == 6 || date.getDay() == 0){
+                       date.setDate(date.getDate() + 2);
+
+                    }else {
+                       date.setDate(date.getDate() + 1);
+
+                    } 
                 }
-                else if(date.getDay() == 0){
-                    date.setDate(date.getDate() + 2);
+                DateLivraison.push(date)
+
+           }
+           if (vendeur[0].type == "Pro") {
+
+              for(i=0; i<5 ; i++){
+               if(date.getDay() == 6 || date.getDay() == 0){
+                   date.setDate(date.getDate() + 2);
+
                 }else {
-                    date.setDate(date.getDate() + 1);
+                   date.setDate(date.getDate() + 1);
+                } 
+
+              }
+              
+              DateLivraison.push(date)
  
-                 } 
-                 DateLivraison.push(date)
-            }
+           }
+           if (vendeur[0].type == "Expert") {
+               if(date.getDay() == 6 ){
+                   date.setDate(date.getDate() + 3);                   
+               }
+               else if(date.getDay() == 0){
+                   date.setDate(date.getDate() + 2);
+               }else {
+                   date.setDate(date.getDate() + 1);
+
+                } 
+                DateLivraison.push(date)
+           }
+
+           
+j++
+        }
+       
+        let commandePush = new Commande({
+            Produits: Produits,
+            Quantite: Quantite,
+            idClient: req.params.idClient,
+            PrixTotal: PrixTotal,
+            DateLivraison: DateLivraison,
+            FullName: req.body.FullName,
+            adresse: req.body.adresse,
+            Phone: req.body.Phone,
+
+        })
+
+      commandePush.save()
+      .then(async ()=>{
+          await Panier.deleteMany({idClient:req.params.idClient})
+          .then(() => res.json({notification: "commande Added !"})) 
+      } )
+      .catch((err) => res.json(err))
  
-            
- 
-         }
-        
-         let commandePush = new Commande({
-             Produits: Produits,
-             Quantite: Quantite,
-             idClient: req.params.idClient,
-             PrixTotal: PrixTotal,
-             DateLivraison: DateLivraison,
-             FullName: req.body.FullName,
-             adresse: req.body.adresse,
-             Phone: req.body.Phone,
- 
-         })
- 
-       commandePush.save()
-       .then(async ()=>{
-           await Panier.deleteMany({idClient:req.params.idClient})
-           .then(() => res.json({notification: "commande Added !"})) 
-       } )
-       .catch((err) => res.json(err))
-  
-     }).catch((err) => {
-         res.status(500).json(err)
-     })
- 
-     
+    }).catch((err) => {
+        res.status(500).json(err)
+    })
+
+    
 }
 
 exports.getCommandes = async (req, res) => {

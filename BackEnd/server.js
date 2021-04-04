@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const bodyParser = require('body-parser');
+const path = require("path")
 
 // @ts-ignore
 global.__basedir = __dirname;
@@ -25,6 +26,10 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 // parse requests of content-type - application/json
 app.use(bodyParser.json())
+
+
+app.use("/", express.static(path.join(__dirname, "/app/upload")));
+
 
 
 
@@ -59,5 +64,6 @@ require("./app/routes/route.livreur")(app)
 var server = app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 })
+
 
 module.exports = {server, mongoose}

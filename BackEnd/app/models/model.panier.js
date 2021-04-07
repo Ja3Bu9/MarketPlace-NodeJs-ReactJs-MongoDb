@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
-const { schema } = require('../../../../Mcdo mongodb nodejs/backend/app/models/model.menu');
-
-
 const Schema = mongoose.Schema;
+
 const PanierSchema = new Schema({
     
     idProduit: {

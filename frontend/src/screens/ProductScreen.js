@@ -1,31 +1,57 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import {Link} from 'react-router-dom'
-import data from '../data'
+import { detailsProduct } from '../actions/productsActions'
+import { addToCart } from '../actions/cartActions'
+
 
 export default function ProductScreen(props) {
-    console.log(props.match.params.id)
-    const product = data.products.find(x => x._id === props.match.params.id)
+    
+    const [qty, setQty] = useState(1)
+    const productDetails = useSelector(state => state.productDetails)
+    const {product, loading, error} = productDetails;
+
+    const userSignin = useSelector(state=> state.userSignin);
+    const {userInfo} = userSignin;
+
+    const dispatch = useDispatch();
+    
+
+    useEffect(() => {
+        dispatch(detailsProduct(props.match.params.id));
+        return () => {
+            //
+        }
+    }, []);
+
+    const handleAddToCart = (productId,clientId,qty) => {
+        
+            dispatch(addToCart(productId,clientId,qty))
+    }
 
     return (
         <div >
             <div className="back-to-result">
                 <Link to="/" >Back to Result</Link>
             </div>
-            <div className="details">
+            {loading? <div>Loading ...</div>:
+            error? <div>{error}</div>:
+            (
+                <div className="details">
                 <div className="details-image">
-                    <img src={product.image} alt="product"></img>
+                    <img src={"http://localhost:8080/imgs/"+product.photo} alt="product"></img>
                 </div>
                 <div className="details-info">
                     <ul>
                         <li>
-                            <h4>{product.name}</h4>
+                            <h4>{product.nom}</h4>
 
                         </li>
                         <li>
                             {product.rating} Starts ({product.numReviews} Reviews)
                         </li>
                         <li>
-                        Price :<b> ${product.price}</b>
+                        Price :<b> {product.prix} MAD</b>
                         </li>
                         <li>Description: 
                             <div>
@@ -37,25 +63,32 @@ export default function ProductScreen(props) {
                 <div className="details-action">
                     <ul>
                         <li>
-                            Price: {product.price}
+                            Price: {product.prix} MAD
                         </li>
                         <li>
-                            Status: {product.status}
+                        Status : {product.quantite > 0? "In Stock" : "Out Of Stock" }
                         </li>
                         <li>
-                            Qty: <select>
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
+                            Qty: <select value={qty} onChange={(e) => {setQty(e.target.value)}}>
+                                {[...Array(product.quantite).keys()].map(x=> 
+                                   <option key={x+1} value={x+1}>{x+1}</option> 
+                                    )}
+                                
                             </select>
                         </li>
                         <li>
-                            <button className="button primary">Add to Cart</button>
+                           {product.quantite > 0 && <button onClick={ () => {
+                               if(userInfo == null){
+                                window.location.href = '/signin';
+                            }else{
+                                handleAddToCart(product._id,userInfo.id,qty)}}} className="button primary">Add to Cart</button>} 
                         </li>
                     </ul>
                 </div>
             </div>
+            )
+            }
+           
         
         </div>
     )

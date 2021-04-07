@@ -85,7 +85,7 @@ exports.registerClient = (req, res) => {
                  );
             }
             else {
-                res.json("email already exist !");
+                res.json({message:"email already exist !"});
             }
         })
         .catch((err) => res.json(err))
@@ -101,27 +101,28 @@ exports.loginClient = (req, res) => {
 
         Client.findOne({
             email: req.body.email
-        }).select('password').select('status').then((client) => {
+        }).select('password').select('status').select('nom').then((client) => {
             if (client == null) {
-                error.push("email not found !")
-                res.json({ error: error });
-                return;
+                res.json({ message: "email not found !" });
+                
+            }
+            var passwordIsValid = bcrypt.compareSync(req.body.password, client.password);
+            if (!passwordIsValid){
+                res.json({
+                    message: "credential error !"
+                });
             }
             if (client.status != "Active") {
-                return res.status(401).send({
+                res.send({
                   message: "Pending Account. Please Verify Your Email!",
                 });
               }
-            var passwordIsValid = bcrypt.compareSync(req.body.password, client.password);
-            if (!passwordIsValid){
-                error.push("credential error !")
-                return res.json({
-                    error: error
-                });
-            }
+            
             else{
                 var token = jwt.sign({
                     id: client._id,
+                    nom: client.nom,
+                    status: client.status,
                     client: true,
                 }, config.secret, {
                     expiresIn: 86400

@@ -14,7 +14,7 @@ const ProduitSchema = new Schema({
         minlength: 3
     },
     quantite: {
-        type: String,
+        type: Number,
         required: true,
         trim: true
     },

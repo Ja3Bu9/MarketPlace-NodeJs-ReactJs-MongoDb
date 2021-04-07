@@ -4,7 +4,7 @@ module.exports = app => {
     const middleWare = require("../middleware/authenticateVendeur")
 
 
-    Router.route("/add").post(middleWare.Vendeur,conntrollerproduit.addProduit);
+    Router.route("/add").post(conntrollerproduit.addProduit);
     Router.route("/").get(conntrollerproduit.getProduits);
     Router.route("/:idProduit").get(conntrollerproduit.getProduit);
     Router.route("/myproducts/:idVendeur").get(middleWare.Vendeur,conntrollerproduit.getProduitsVendeur);

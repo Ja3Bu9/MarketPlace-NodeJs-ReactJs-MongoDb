@@ -1,13 +1,11 @@
 import React, { useState , useEffect } from 'react'
 import {Link} from 'react-router-dom'
-import axios from 'axios'
 import { useSelector, useDispatch } from 'react-redux'
 import { listProducts } from '../actions/productsActions'
 
 
 export default function HomeScreen() {
-
-    // const [product, setProduct] = useState([]);
+    
     const productList = useSelector(state => state.productList);
     const { products, loading, error } = productList ;
     const dispatch = useDispatch();

@@ -44,18 +44,23 @@ export default function ProductScreen(props) {
                 <div className="details-info">
                     <ul>
                         <li>
-                            <h4>{product.nom}</h4>
+                            <h1>{product.nom}</h1>
 
                         </li>
                         <li>
-                            {product.rating} Starts ({product.numReviews} Reviews)
+                            <h4>Quantite: {product.quantite}</h4>
                         </li>
                         <li>
                         Price :<b> {product.prix} MAD</b>
                         </li>
                         <li>Description: 
                             <div>
-                                {product.description}
+                                { 
+                                
+                                product.description ? product.description :<> <br></br> <h5>No Details..</h5></>
+                                
+                                }
+                                
                             </div></li>
 
                     </ul>

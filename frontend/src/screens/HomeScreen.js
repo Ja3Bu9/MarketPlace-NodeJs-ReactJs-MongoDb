@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { listProducts } from '../actions/productsActions'
 
 
+
 export default function HomeScreen() {
     
     const productList = useSelector(state => state.productList);
@@ -21,6 +22,9 @@ export default function HomeScreen() {
     return (
         loading? <div>Loading ...</div>:
         error? <div>{error}</div>:
+        <>
+        <div className="navbar" style={{backgroundImage: `url(/images/market-place-header-banner.jpg)`}}></div>
+
         <ul className="products">
           {
             products.map(product => 
@@ -45,5 +49,6 @@ export default function HomeScreen() {
          
 
         </ul>
+        </>
     )
 }

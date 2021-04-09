@@ -3,6 +3,10 @@ const app = express();
 const cors = require("cors");
 const bodyParser = require('body-parser');
 const path = require("path")
+var xss = require('xss-clean');
+const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require("helmet");
+const rateLimit = require('express-rate-limit');
 
 // @ts-ignore
 global.__basedir = __dirname;
@@ -28,9 +32,37 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
 
+
 app.use("/", express.static(path.join(__dirname, "/app/upload")));
 
 
+
+// to prevent ddos attack 
+const limit = rateLimit({
+  max: 100,// max requests
+  windowMs: 60 * 60 * 1000, // 1 Hour of ban each ip depass 100 request  
+  message: 'Too many requests !' // message to send
+});
+
+global.ddos = limit;
+global.__basedir = __dirname;
+
+
+// XSS attacks
+app.use(xss());
+
+
+//helmet
+app.use(helmet.contentSecurityPolicy());
+app.use(helmet.dnsPrefetchControl());
+app.use(helmet.frameguard());
+app.use(helmet.hidePoweredBy());
+app.use(helmet.hsts());
+app.use(helmet.ieNoOpen());
+app.use(helmet.noSniff());
+app.use(helmet.permittedCrossDomainPolicies());
+app.use(helmet.referrerPolicy());
+app.use(helmet.xssFilter());
 
 
 mongoose.Promise = global.Promise;
@@ -46,6 +78,10 @@ mongoose.connect(dbConfig.url, {
 });
 
 
+// NoSQL Injection Attacks
+app.use(mongoSanitize({
+  replaceWith: 'get_some_help'
+}));
 
 
 require("./app/routes/route.admin")(app)

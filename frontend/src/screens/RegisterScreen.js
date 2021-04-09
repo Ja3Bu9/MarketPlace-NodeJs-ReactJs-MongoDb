@@ -12,7 +12,6 @@ export default function RegisterScreen(props) {
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
     const [adresse, setAdresse] = useState('');
-    const [rePassword, setRePassword] = useState('');
     const userRegister = useSelector(state=> state.userRegister);
     const {loading, userInfo, error} = userRegister;
 
@@ -28,7 +27,7 @@ export default function RegisterScreen(props) {
             //
         }
     }, [userInfo]);
-
+    
     
     const submitHandler = (e) => {
         e.preventDefault();
